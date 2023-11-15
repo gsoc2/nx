@@ -9,6 +9,7 @@ import { ProjectGraphClientResponse } from 'nx/src/command-line/graph/graph';
 /* eslint-enable @nx/enforce-module-boundaries */
 import { getProjectGraphDataService } from './hooks/get-project-graph-data-service';
 import { TasksSidebarErrorBoundary } from './feature-tasks/tasks-sidebar-error-boundary';
+import { Demo } from './demo';
 
 const { appConfig } = getEnvironmentConfig();
 const projectGraphDataService = getProjectGraphDataService();
@@ -173,5 +174,9 @@ export const releaseRoutes: RouteObject[] = [
       },
       ...childRoutes,
     ],
+  },
+  {
+    path: '/project-details',
+    element: <Demo />,
   },
 ];

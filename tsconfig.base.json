@@ -92,6 +92,7 @@
       "@nx/playwright": ["packages/playwright/index.ts"],
       "@nx/plugin": ["packages/plugin"],
       "@nx/plugin/*": ["packages/plugin/*"],
+      "@nx/project-details": ["graph/project-details/src/index.ts"],
       "@nx/react": ["packages/react"],
       "@nx/react-native": ["packages/react-native"],
       "@nx/react-native/*": ["packages/react-native/*"],
