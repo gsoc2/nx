@@ -9,7 +9,7 @@ import { ProjectGraphClientResponse } from 'nx/src/command-line/graph/graph';
 /* eslint-enable @nx/enforce-module-boundaries */
 import { getProjectGraphDataService } from './hooks/get-project-graph-data-service';
 import { TasksSidebarErrorBoundary } from './feature-tasks/tasks-sidebar-error-boundary';
-import { Demo } from './demo';
+import { ProjectDetails } from '@nx/graph/project-details';
 
 const { appConfig } = getEnvironmentConfig();
 const projectGraphDataService = getProjectGraphDataService();
@@ -53,6 +53,12 @@ const taskDataLoader = async (selectedWorkspaceId: string) => {
   );
 
   return await projectGraphDataService.getTaskGraph(projectInfo.taskGraphUrl);
+};
+
+const projectDetailsLoader = async (projectName: string) => {
+  const workspaceData = await workspaceDataLoader(appConfig.defaultWorkspaceId);
+
+  return workspaceData.projects.find((project) => project.name === projectName);
 };
 
 const childRoutes: RouteObject[] = [
@@ -176,7 +182,12 @@ export const releaseRoutes: RouteObject[] = [
     ],
   },
   {
-    path: '/project-details',
-    element: <Demo />,
+    path: '/project-details/:projectName',
+    id: 'selectedProjectDetails',
+    element: <ProjectDetails />,
+    loader: async ({ request, params }) => {
+      const projectName = params.projectName;
+      return projectDetailsLoader(projectName);
+    },
   },
 ];

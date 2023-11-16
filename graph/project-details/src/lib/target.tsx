@@ -1,5 +1,6 @@
+/* eslint-disable @nx/enforce-module-boundaries */
+// nx-ignore-next-line
 import { TargetConfiguration } from '@nx/devkit';
-import useSourceMap from './use-source-map';
 import PropertyRenderer from './property-renderer';
 import { useState } from 'react';
 

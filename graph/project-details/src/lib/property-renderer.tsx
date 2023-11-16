@@ -1,5 +1,4 @@
 import { getSourceInformation } from './get-source-information';
-import useSourceMap from './use-source-map';
 
 /* eslint-disable-next-line */
 export interface PropertyRendererProps {
@@ -10,7 +9,7 @@ export interface PropertyRendererProps {
 }
 
 export function PropertyRenderer(props: PropertyRendererProps) {
-  const sourceMap = useSourceMap(props.projectRoot);
+  const sourceMap = {} as any; //useSourceMap(props.projectRoot);
 
   if (typeof props.propertyValue === 'string') {
     return (

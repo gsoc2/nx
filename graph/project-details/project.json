@@ -1,5 +1,5 @@
 {
-  "name": "project-details",
+  "name": "graph-project-details",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "graph/project-details/src",
   "projectType": "library",
