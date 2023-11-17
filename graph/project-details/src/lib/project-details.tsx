@@ -11,12 +11,18 @@ import { ProjectGraphProjectNode } from '@nx/devkit';
 
 export function ProjectDetails() {
   const {
-    name,
-    data: { targets, root, ...projectData },
-  } = useRouteLoaderData('selectedProjectDetails') as ProjectGraphProjectNode;
+    project: {
+      name,
+      data: { targets, root, ...projectData },
+    },
+    sourceMaps,
+  } = useRouteLoaderData('selectedProjectDetails') as {
+    project: ProjectGraphProjectNode;
+    sourceMaps: Record<string, Record<string, string[]>>;
+  };
 
   return (
-    <div className="m-4">
+    <div className="m-4 overflow-auto">
       <h1 className="text-2xl">{name}</h1>
       <h2 className="text-lg pl-6 mb-3">{root}</h2>
       <div>

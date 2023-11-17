@@ -13,7 +13,6 @@ export interface TargetProps {
 
 export function Target(props: TargetProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   return (
     <div className="ml-3">
       <h3 className="text-lg" onClick={() => setIsCollapsed(!isCollapsed)}>

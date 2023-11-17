@@ -46,6 +46,8 @@ import { HashPlanner } from '../../native';
 import { transformProjectGraphForRust } from '../../native/transform-objects';
 import { getAffectedGraphNodes } from '../affected/affected';
 import { readFileMapCache } from '../../project-graph/nx-deps-cache';
+import { readSourceMaps } from '../../utils/source-maps';
+import { ConfigurationSourceMaps } from '../../project-graph/utils/project-configuration-utils';
 
 export interface ProjectGraphClientResponse {
   hash: string;
@@ -93,7 +95,8 @@ function buildEnvironmentJs(
   localMode: 'build' | 'serve',
   depGraphClientResponse?: ProjectGraphClientResponse,
   taskGraphClientResponse?: TaskGraphClientResponse,
-  expandedTaskInputsReponse?: ExpandedTaskInputsReponse
+  expandedTaskInputsReponse?: ExpandedTaskInputsReponse,
+  sourceMapsResponse?: ConfigurationSourceMaps
 ) {
   let environmentJs = `window.exclude = ${JSON.stringify(exclude)};
   window.watch = ${!!watchMode};
@@ -110,6 +113,7 @@ function buildEnvironmentJs(
         projectGraphUrl: 'project-graph.json',
         taskGraphUrl: 'task-graph.json',
         taskInputsUrl: 'task-inputs.json',
+        sourceMapsUrl: 'source-maps.json'
       }
     ],
     defaultWorkspaceId: 'local',
@@ -129,10 +133,15 @@ function buildEnvironmentJs(
     environmentJs += `window.expandedTaskInputsResponse = ${JSON.stringify(
       expandedTaskInputsReponse
     )};`;
+
+    environmentJs += `window.sourceMapsResponse = ${JSON.stringify(
+      sourceMapsResponse
+    )};`;
   } else {
     environmentJs += `window.projectGraphResponse = null;`;
     environmentJs += `window.taskGraphResponse = null;`;
     environmentJs += `window.expandedTaskInputsResponse = null;`;
+    environmentJs += `window.sourceMapsResponse = null;`;
   }
 
   return environmentJs;
@@ -348,13 +357,16 @@ export async function generateGraph(
         depGraphClientResponse
       );
 
+      const sourceMapsResponse = createSourceMapsResponse();
+
       const environmentJs = buildEnvironmentJs(
         args.exclude || [],
         args.watch,
         !!args.file && args.file.endsWith('html') ? 'build' : 'serve',
         depGraphClientResponse,
         taskGraphClientResponse,
-        taskInputsReponse
+        taskInputsReponse,
+        sourceMapsResponse
       );
       html = html.replace(/src="/g, 'src="static/');
       html = html.replace(/href="styles/g, 'href="static/styles');
@@ -511,6 +523,12 @@ async function startServer(
         'task input generation:start',
         'task input generation:end'
       );
+      return;
+    }
+
+    if (sanitizePath === 'source-maps.json') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(createSourceMapsResponse()));
       return;
     }
 
@@ -747,6 +765,10 @@ async function createExpandedTaskInputResponse(
     'task input static generation:end'
   );
   return response;
+}
+
+function createSourceMapsResponse() {
+  return readSourceMaps();
 }
 
 function getAllTaskGraphsForWorkspace(
